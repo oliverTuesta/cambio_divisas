@@ -97,13 +97,20 @@ public:
             cout << "5) Historial" << '\n';
             cout << "6) Escribir Comentarios" << '\n';
             cout << "7) Ver Comentarios" << '\n';
-            cout << "\n8) Eliminar cuenta" << '\n';
-            cout << "\n9) Ordenar Cuentas" << '\n';
+            cout << "8) Eliminar cuenta" << '\n';
+            cout << "9) Mostrar cuentas ordenadas por nombre" << '\n';
+            cout << "10) Mostrar Cuentas" << '\n';
+            cout << "11) Busqueda normal por ID" << '\n';
+            cout << "12) Busqueda binaria por ID" << '\n';
+
             cout << "0) Salir" << '\n';
             cout << "\nElija una opcion: ";
             cin >> opcion;
             string moneda;
             float monto;
+            CCuenta* c;
+            int id;
+			
             switch (opcion) {
             case 1:
                 Clear();
@@ -144,6 +151,32 @@ public:
                 Clear();
                 controller.ordenarCuentas();
                 break;
+            case 10:
+				Clear();
+				controller.mostrarCuentas();
+				break;
+            case 11:
+                Clear();
+                cout << "\t\tBUSQUEDA NORMAL"
+                    << "\n\n";
+                cout << "Ingrese un ID: ";
+                cin >> id;
+                c = controller.buscarPorId(id);
+                if (c) {
+                    c->imprimirCuenta();
+                }
+                break;
+            case 12:
+                Clear();
+                cout << "\t\tBUSQUEDA BINARIA"
+                    << "\n\n";
+                cout << "Ingrese un ID: ";
+                cin >> id;
+                c = controller.binarySearchId(id);
+                if (c) {
+                    c->imprimirCuenta();
+                }
+                break;
             case 8:
                 Clear();
                 cout << "Esta seguro que desea eliminar su cuenta?" << '\n';
@@ -157,6 +190,7 @@ public:
                 }
                 break;
             }
+            
         } while (opcion != 0);
     }
 

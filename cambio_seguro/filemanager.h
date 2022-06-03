@@ -27,12 +27,6 @@ public:
         return text;
     }
 
-	//eliminar archvios dado un nombre
-	void eliminarArchivo(string fileName) {
-		remove(fileName.c_str());
-	}
-
-
     void leerCaracteres() {
         ifstream file;
         file.open(fileName, ios::in);

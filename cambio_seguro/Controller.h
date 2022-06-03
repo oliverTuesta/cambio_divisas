@@ -204,7 +204,7 @@ public:
     }
     void imprimirComentarios() { comentarios->imprimirPila(fm); }
 
-    void merge(int l, int m, int r) {
+    void merge(vector<CCuenta*> &cuentas, int l, int m, int r) {
 
         int n1 = m - l + 1;
         int n2 = r - m;
@@ -251,16 +251,16 @@ public:
         }
     }
 
-    void mergeSort(int l, int r) {
+    void mergeSort(vector<CCuenta*> &cuentas, int l, int r) {
 
         if (l >= r)
             return;
 
         int m = (l + r) / 2;
 
-        mergeSort(l, m);
-        mergeSort(m + 1, r);
-        merge(l, m, r);
+        mergeSort(cuentas, l, m);
+        mergeSort(cuentas, m + 1, r);
+        merge(cuentas, l, m, r);
     }
 
     void selectionSort() {
@@ -281,9 +281,53 @@ public:
 
     void ordenarCuentas() {
         // selectionSort();
-        mergeSort(0, cuentas.size() - 1);
-        for (auto i : cuentas) {
-            cout << i->getName() << '\n';
+        vector<CCuenta*> cuentasOrdenadas;
+        //copiar datos de cuentas a cuentasOrdenadas
+        for(CCuenta* c : cuentas)
+        {
+            cuentasOrdenadas.push_back(c);
         }
+
+        mergeSort(cuentasOrdenadas, 0, cuentas.size() - 1);
+        for (auto i : cuentasOrdenadas) {
+            cout << i->getId() << "  " << i->getName() << '\n';
+        }
+    }
+
+	//buscar cuenta por ID
+	CCuenta* buscarPorId(int id) {
+		for (auto i : cuentas) {
+            i->imprimirCuenta();
+			if (i->getId() == id) {
+				return i;
+			}
+		}
+		return nullptr;
+	}
+
+	//binary search by ID
+	CCuenta* binarySearchId(int id) {
+		int l = 0, r = cuentas.size() - 1;
+		while (l <= r) {
+			int m = (l + r) / 2;
+            if (cuentas[m])
+                cuentas[m]->imprimirCuenta();
+			if (cuentas[m]->getId() == id) {
+				return cuentas[m];
+			}
+			else if (cuentas[m]->getId() < id) {
+				l = m + 1;
+			}
+			else {
+				r = m - 1;
+			}
+		}
+		return nullptr;
+	}
+    void mostrarCuentas() {
+		cout << "ID\tNOMBRE\n\n";
+		for (auto i : cuentas) {
+			cout << i->getId() << "  " <<  i->getName() << '\n';
+		}
     }
 };

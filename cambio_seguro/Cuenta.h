@@ -121,6 +121,14 @@ public:
         imprimirLista(saldo->siguiente);
     }
 
+    void imprimirCuenta() {
+		cout << "Nombre: " << name << '\n';
+		cout << "Usuario: " << user << '\n';
+		cout << "Password: " << password << '\n';
+		cout << "Saldos: " << '\n';
+		imprimirLista(listaSaldos);
+    }
+
     void imprimirSaldos() {
         cout << "\nID\tMONEDA\tSALDO"
             << "\n";
