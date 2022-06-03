@@ -165,6 +165,9 @@ public:
                 if (c) {
                     c->imprimirCuenta();
                 }
+                else {
+					cout << "No se encontro la cuenta" << '\n';
+                }
                 break;
             case 12:
                 Clear();
@@ -175,6 +178,9 @@ public:
                 c = controller.binarySearchId(id);
                 if (c) {
                     c->imprimirCuenta();
+                }
+                else {
+                    cout << "No se encontro la cuenta" << '\n';
                 }
                 break;
             case 8:

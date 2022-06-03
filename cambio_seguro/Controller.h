@@ -297,7 +297,7 @@ public:
 	//buscar cuenta por ID
 	CCuenta* buscarPorId(int id) {
 		for (auto i : cuentas) {
-            i->imprimirCuenta();
+            cout << i->getId() << "  " << i->getName() << '\n';
 			if (i->getId() == id) {
 				return i;
 			}
@@ -311,7 +311,8 @@ public:
 		while (l <= r) {
 			int m = (l + r) / 2;
             if (cuentas[m])
-                cuentas[m]->imprimirCuenta();
+                cout << cuentas[m]->getId() << "  " << cuentas[m]->getName() << '\n';
+
 			if (cuentas[m]->getId() == id) {
 				return cuentas[m];
 			}
