@@ -50,6 +50,9 @@
     <ClInclude Include="monedasfilemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ArbolBinarioBusqueda.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cambio_seguro.cpp">

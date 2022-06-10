@@ -4,10 +4,12 @@
 #include <iostream>
 #include <string>
 
-class CMenu {
+class CMenu
+{
 private:
     CController controller;
-    void Clear() {
+    void Clear()
+    {
 #if defined _WIN32
         system("cls");
         // clrscr(); // including header file : conio.h
@@ -23,29 +25,34 @@ public:
     CMenu() {}
     ~CMenu() {}
 
-    void registrarUsuario() {
+    void registrarUsuario()
+    {
         int opcion = 1;
         string name, user, password;
         name = "";
         cout << "\n\t\tREGISTRAR USUARIO"
-            << "\n\n";
+             << "\n\n";
         cout << "Ingrese su nombre: ";
-        while (name.size() < 1) {
+        while (name.size() < 1)
+        {
             getline(cin, name);
         }
 
         bool usuarioExiste = false;
-        do {
+        do
+        {
             cout << "Ingrese su nombre de usuario: ";
             cin >> user;
             usuarioExiste = controller.buscarCuentaPorUsuario(user) != nullptr;
-            if (usuarioExiste) {
+            if (usuarioExiste)
+            {
                 cout << "Usuario ya registrado, intente otra vez" << '\n';
             }
         } while (usuarioExiste);
 
         bool passwordAccepted = false;
-        while (!passwordAccepted && !usuarioExiste) {
+        while (!passwordAccepted && !usuarioExiste)
+        {
             cout << "Ingrese su contrasena: ";
             cin >> password;
             passwordAccepted = password.size() >= 4;
@@ -53,42 +60,48 @@ public:
                 cout << "Su contrasena debe tener mas de 4 digitos" << '\n';
         }
 
-        CCuenta* nuevaCuenta = new CCuenta(name, user, password);
+        CCuenta *nuevaCuenta = new CCuenta(name, user, password);
         controller.registrarCuenta(nuevaCuenta);
         Clear();
     }
 
-    CCuenta* iniciarSesion() {
+    CCuenta *iniciarSesion()
+    {
 
         string user, password;
         cout << "\n\t\tINICIAR SESION"
-            << "\n\n";
+             << "\n\n";
         cout << "Ingrese su usuario: ";
         cin >> user;
         cout << "Ingrese su contrasena: ";
         cin >> password;
-        CCuenta* cuenta = controller.iniciarSesion(user, password);
+        CCuenta *cuenta = controller.iniciarSesion(user, password);
         Clear();
         if (cuenta != nullptr)
             return cuenta;
         return nullptr;
     }
 
-    void escribirComentario(CCuenta* cuenta) {
+    void escribirComentario(CCuenta *cuenta)
+    {
         cout << "\t\tESCRIBE UN COMENTARIO" << '\n';
         string texto;
-        while (texto.size() < 1) {
+        while (texto.size() < 1)
+        {
             getline(cin, texto);
         }
         // cin >> texto;
         controller.agregarComentario(cuenta->getName(), texto);
-        cout << "\nGracias por dejar un comentario\n" << '\n';
+        cout << "\nGracias por dejar un comentario\n"
+             << '\n';
     }
 
-    void menuInisioSesion(CCuenta* cuenta) {
+    void menuInisioSesion(CCuenta *cuenta)
+    {
 
         int opcion = 1;
-        do {
+        do
+        {
             cout << "\n\t\tBienvenido " << cuenta->getName() << "\n\n";
             cout << "1) Depositar dinero" << '\n';
             cout << "2) Ver saldo" << '\n';
@@ -102,20 +115,22 @@ public:
             cout << "10) Mostrar Cuentas" << '\n';
             cout << "11) Busqueda normal por ID" << '\n';
             cout << "12) Busqueda binaria por ID" << '\n';
-
+            cout << "13) Crear Arbol binario" << '\n';
+            cout << "14) Mostrar Arbol binario" << '\n';
             cout << "0) Salir" << '\n';
             cout << "\nElija una opcion: ";
             cin >> opcion;
             string moneda;
             float monto;
-            CCuenta* c;
+            CCuenta *c;
             int id;
-			
-            switch (opcion) {
+
+            switch (opcion)
+            {
             case 1:
                 Clear();
                 cout << "\t\tDEPOSITAR DINERO"
-                    << "\n\n";
+                     << "\n\n";
                 moneda = controller.seleccionarTipoMoneda();
                 if (moneda.empty())
                     break;
@@ -152,36 +167,53 @@ public:
                 controller.ordenarCuentas();
                 break;
             case 10:
-				Clear();
-				controller.mostrarCuentas();
-				break;
+                Clear();
+                controller.mostrarCuentas();
+                break;
             case 11:
                 Clear();
                 cout << "\t\tBUSQUEDA NORMAL"
-                    << "\n\n";
+                     << "\n\n";
                 cout << "Ingrese un ID: ";
                 cin >> id;
                 c = controller.buscarPorId(id);
-                if (c) {
+                if (c)
+                {
                     c->imprimirCuenta();
                 }
-                else {
-					cout << "No se encontro la cuenta" << '\n';
+                else
+                {
+                    cout << "No se encontro la cuenta" << '\n';
                 }
                 break;
             case 12:
                 Clear();
                 cout << "\t\tBUSQUEDA BINARIA"
-                    << "\n\n";
+                     << "\n\n";
                 cout << "Ingrese un ID: ";
                 cin >> id;
                 c = controller.binarySearchId(id);
-                if (c) {
+                if (c)
+                {
                     c->imprimirCuenta();
                 }
-                else {
+                else
+                {
                     cout << "No se encontro la cuenta" << '\n';
                 }
+                break;
+            case 13:
+                Clear();
+                cout << "\t\tCREAR ARBOL BINARIO"
+                     << "\n\n";
+                controller.crearArbolBinarioBusqueda();
+                cout << "Arbol creado" << '\n';
+                break;
+            case 14:
+                Clear();
+                cout << "\t\tMOSTRAR ARBOL BINARIO"
+                     << "\n\n";
+                controller.mostrarArbolBinarioBusqueda();
                 break;
             case 8:
                 Clear();
@@ -190,34 +222,39 @@ public:
                 cout << "(si | no)" << '\n';
                 string respuesta;
                 cin >> respuesta;
-                if (respuesta == "Si" || respuesta == "si" || respuesta == "SI") {
+                if (respuesta == "Si" || respuesta == "si" || respuesta == "SI")
+                {
                     controller.eliminarCuenta(cuenta);
                     opcion = 0;
                 }
                 break;
             }
-            
+
         } while (opcion != 0);
     }
 
-    void init() {
+    void init()
+    {
         int opcion = 1;
-        do {
+        do
+        {
             cout << "\n\t\tBIENVENIDO A CAMBIO SEGURO"
-                << "\n\n";
+                 << "\n\n";
             cout << "1) Inisiar sesion" << '\n';
             cout << "2) Registrarse" << '\n';
             cout << "0) Salir" << '\n';
             cout << "\nElija una opcion: ";
             cin >> opcion;
-            CCuenta* cuenta;
-            switch (opcion) {
+            CCuenta *cuenta;
+            switch (opcion)
+            {
             case 1:
                 Clear();
                 cuenta = iniciarSesion();
                 if (cuenta != nullptr)
                     menuInisioSesion(cuenta);
-                if (cuenta == nullptr) {
+                if (cuenta == nullptr)
+                {
                     cout << "\nUsuario o contrasena incorrecta" << '\n';
                 }
                 break;

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Menu.h"
-using namespace System;
+// using namespace System;
 
 int main()
 {

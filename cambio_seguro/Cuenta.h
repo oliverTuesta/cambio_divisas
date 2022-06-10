@@ -4,17 +4,20 @@
 #include <cstddef>
 #include <iostream>
 #include <string>
+#include <sstream>
 using namespace std;
 
-struct Saldo {
+struct Saldo
+{
     int id;
     float dinero = 0;
     string tipoMoneda;
-    Saldo* siguiente;
+    Saldo *siguiente;
     Saldo() : id(1), dinero(0), siguiente(nullptr), tipoMoneda("PEN") {}
 };
 
-class CCuenta {
+class CCuenta
+{
 private:
     int id;
     string user;
@@ -22,17 +25,22 @@ private:
     string name;
 
     int cantidadSaldos;
-    Saldo* listaSaldos;
-    Saldo* ultimo;
+    Saldo *listaSaldos;
+    Saldo *ultimo;
 
-    auto getBuscarPorTipoMoneda() {
-        return [&](string tipoMoneda) {
-            Saldo* actual = listaSaldos;
-            if (listaSaldos == nullptr) {
+    auto getBuscarPorTipoMoneda()
+    {
+        return [&](string tipoMoneda)
+        {
+            Saldo *actual = listaSaldos;
+            if (listaSaldos == nullptr)
+            {
                 return listaSaldos;
             }
-            while (actual != nullptr) {
-                if (actual->tipoMoneda == tipoMoneda) {
+            while (actual != nullptr)
+            {
+                if (actual->tipoMoneda == tipoMoneda)
+                {
                     return actual;
                 }
                 actual = actual->siguiente;
@@ -42,14 +50,16 @@ private:
     }
 
 public:
-    CCuenta() {
+    CCuenta()
+    {
         int id = 0;
         string name = "undefined";
         listaSaldos = new Saldo();
         ultimo = listaSaldos;
         cantidadSaldos = 1;
     }
-    CCuenta(string name, string user, string password) {
+    CCuenta(string name, string user, string password)
+    {
         this->name = name;
         this->user = user;
         this->password = password;
@@ -72,15 +82,19 @@ public:
     void setPassword(string password) { this->password = password; }
     string getPassword() { return this->password; }
 
-    void retirarSaldo(float saldo, string tipoMoneda) {
+    void retirarSaldo(float saldo, string tipoMoneda)
+    {
 
         auto funcionBuscar = getBuscarPorTipoMoneda();
-        Saldo* buscado = funcionBuscar(tipoMoneda);
-        if (buscado == nullptr || buscado->dinero <= 0) {
+        Saldo *buscado = funcionBuscar(tipoMoneda);
+        if (buscado == nullptr || buscado->dinero <= 0)
+        {
             cout << "No tiene saldo en la cuenta esa cuenta" << '\n';
         }
-        else {
-            if (buscado->dinero < saldo) {
+        else
+        {
+            if (buscado->dinero < saldo)
+            {
                 cout << "Saldo insuficiente" << '\n';
             }
             else
@@ -88,16 +102,20 @@ public:
         }
     }
 
-    bool addSaldo(float saldo, string tipoMoneda) {
-        if (saldo < 0) {
+    bool addSaldo(float saldo, string tipoMoneda)
+    {
+        if (saldo < 0)
+        {
             cout << "No se pudo realizar el deposito" << '\n';
             return false;
         }
-        else {
+        else
+        {
             auto funcionBuscar = getBuscarPorTipoMoneda();
-            Saldo* buscado = funcionBuscar(tipoMoneda);
-            if (buscado == nullptr) {
-                Saldo* nuevoSaldo = new Saldo();
+            Saldo *buscado = funcionBuscar(tipoMoneda);
+            if (buscado == nullptr)
+            {
+                Saldo *nuevoSaldo = new Saldo();
                 nuevoSaldo->tipoMoneda = tipoMoneda;
                 nuevoSaldo->dinero = saldo;
                 nuevoSaldo->id = ultimo->id + 1;
@@ -105,14 +123,17 @@ public:
                 ultimo = nuevoSaldo;
                 cantidadSaldos++;
             }
-            else {
+            else
+            {
                 buscado->dinero += saldo;
             }
         }
         return true;
     }
-    void imprimirLista(Saldo* saldo) {
-        if (saldo == nullptr) {
+    void imprimirLista(Saldo *saldo)
+    {
+        if (saldo == nullptr)
+        {
             return;
         }
         cout << saldo->id << '\t';
@@ -121,28 +142,42 @@ public:
         imprimirLista(saldo->siguiente);
     }
 
-    void imprimirCuenta() {
-		cout << "Nombre: " << name << '\n';
-		cout << "Usuario: " << user << '\n';
-		cout << "Password: " << password << '\n';
-		cout << "Saldos: " << '\n';
-		imprimirLista(listaSaldos);
+    void imprimirCuenta()
+    {
+        cout << "Nombre: " << name << '\n';
+        cout << "Usuario: " << user << '\n';
+        cout << "Password: " << password << '\n';
+        cout << "Saldos: " << '\n';
+        imprimirLista(listaSaldos);
     }
 
-    void imprimirSaldos() {
+    void imprimirSaldos()
+    {
         cout << "\nID\tMONEDA\tSALDO"
-            << "\n";
+             << "\n";
         imprimirLista(listaSaldos);
         cout << '\n';
     }
 
-    template <typename T> Saldo* buscarPorId(Saldo* lista, T id) {
-        if (lista == nullptr || lista->id == id) {
+    template <typename T>
+    Saldo *buscarPorId(Saldo *lista, T id)
+    {
+        if (lista == nullptr || lista->id == id)
+        {
             return lista;
         };
         return buscarPorId(lista->siguiente, id);
     }
 
-    Saldo* getListaSaldos() { return listaSaldos; }
+    string toString()
+    {
+        stringstream ss;
+        ss << "ID: " << id << '\t';
+        ss << "Nombre: " << name << '\t';
+        ss << "Usuario: " << user;
+        return ss.str();
+    }
+
+    Saldo *getListaSaldos() { return listaSaldos; }
     int getCantidadSaldos() { return cantidadSaldos; }
 };
