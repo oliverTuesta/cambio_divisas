@@ -111,12 +111,15 @@ public:
             cout << "6) Escribir Comentarios" << '\n';
             cout << "7) Ver Comentarios" << '\n';
             cout << "8) Eliminar cuenta" << '\n';
-            cout << "9) Mostrar cuentas ordenadas por nombre" << '\n';
+            cout << "9) Ordenar Cuentas" << '\n';
             cout << "10) Mostrar Cuentas" << '\n';
-            cout << "11) Busqueda normal por ID" << '\n';
-            cout << "12) Busqueda binaria por ID" << '\n';
-            cout << "13) Crear Arbol binario" << '\n';
-            cout << "14) Mostrar Arbol binario" << '\n';
+            cout << "11) Mostrar Arbol binario" << '\n';
+            cout << "12) Busqueda normal por ID" << '\n';
+            cout << "13) Busqueda binaria por ID" << '\n';
+            cout << "14) Buscar en arbol binario de busqueda" << '\n';
+            cout << "15) Mostrar cuentas ordenadas por nombre" << '\n';
+
+            cout << "16) Generar cuentas aleatorias" << '\n';
             cout << "0) Salir" << '\n';
             cout << "\nElija una opcion: ";
             cin >> opcion;
@@ -124,7 +127,7 @@ public:
             float monto;
             CCuenta *c;
             int id;
-
+            int n;
             switch (opcion)
             {
             case 1:
@@ -164,7 +167,7 @@ public:
                 break;
             case 9:
                 Clear();
-                controller.ordenarCuentas();
+                controller.ordenarCuentasId();
                 break;
             case 10:
                 Clear();
@@ -172,27 +175,21 @@ public:
                 break;
             case 11:
                 Clear();
+                controller.crearArbolBinarioBusqueda();
+                Clear();
+                cout << "\t\tMOSTRAR ARBOL BINARIO"
+                     << "\n\n";
+                controller.mostrarArbolBinarioBusqueda();
+                break;
+            case 12:
+                Clear();
                 cout << "\t\tBUSQUEDA NORMAL"
                      << "\n\n";
                 cout << "Ingrese un ID: ";
                 cin >> id;
+                cout << "Iteraciones: \n\n";
                 c = controller.buscarPorId(id);
-                if (c)
-                {
-                    c->imprimirCuenta();
-                }
-                else
-                {
-                    cout << "No se encontro la cuenta" << '\n';
-                }
-                break;
-            case 12:
-                Clear();
-                cout << "\t\tBUSQUEDA BINARIA"
-                     << "\n\n";
-                cout << "Ingrese un ID: ";
-                cin >> id;
-                c = controller.binarySearchId(id);
+                cout << endl;
                 if (c)
                 {
                     c->imprimirCuenta();
@@ -204,16 +201,51 @@ public:
                 break;
             case 13:
                 Clear();
-                cout << "\t\tCREAR ARBOL BINARIO"
+                cout << "\t\tBUSQUEDA BINARIA"
                      << "\n\n";
-                controller.crearArbolBinarioBusqueda();
-                cout << "Arbol creado" << '\n';
+                cout << "Ingrese un ID: ";
+                cin >> id;
+                cout << endl
+                     << "Iteraciones: \n\n";
+                c = controller.binarySearchId(id);
+                cout << '\n';
+                if (c)
+                {
+                    c->imprimirCuenta();
+                }
+                else
+                {
+                    cout << "No se encontro la cuenta" << '\n';
+                }
                 break;
             case 14:
                 Clear();
-                cout << "\t\tMOSTRAR ARBOL BINARIO"
+                cout << "\t\tBUSQUEDA EN ARBOL BINARIO"
                      << "\n\n";
-                controller.mostrarArbolBinarioBusqueda();
+                cin >> id;
+                cout << endl
+                     << "Iteraciones: \n\n";
+                c = controller.buscarArbolBinarioBusqueda(id);
+                cout << '\n';
+                if (c)
+                    c->imprimirCuenta();
+
+                else
+                    cout << "No se encontro la cuenta" << '\n';
+
+                break;
+            case 15:
+                Clear();
+                controller.ordenarCuentasNombre();
+                break;
+            case 16:
+                Clear();
+                cout << "\t\tGENERAR CUENTAS ALEATORIAS"
+                     << "\n\n";
+                cout << "Ingrese el numero de cuentas a generar: ";
+                cin >> n;
+                controller.generarCuentas(n);
+                cout << "Cuentas generadas" << '\n';
                 break;
             case 8:
                 Clear();

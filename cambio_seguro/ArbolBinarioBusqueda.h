@@ -68,23 +68,22 @@ private:
             inOrder(node->right);
         }
     }
+
+    // buscar un nodo en el arbol dada una llave
     Node<T> *buscar(Node<T> *node, int key)
     {
-        if (node == NULL)
+        if (node == NULL || node->key == key)
         {
-            return NULL;
+            return node;
         }
-        else if (key < node->key)
+        cout << node->data->getId() << "  " << node->data->getName() << '\n';
+        if (key < node->key)
         {
             return buscar(node->left, key);
         }
-        else if (key > node->key)
-        {
-            return buscar(node->right, key);
-        }
         else
         {
-            return node;
+            return buscar(node->right, key);
         }
     }
 
@@ -122,6 +121,7 @@ public:
     }
     Node<T> *buscar(int key)
     {
+        cout << "aqui1" << endl;
         return buscar(root, key);
     }
 };

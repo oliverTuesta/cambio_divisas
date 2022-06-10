@@ -8,11 +8,13 @@
 #include "monedasfilemanager.h"
 #include "ArbolBinarioBusqueda.h"
 #include <algorithm>
+#include <time.h>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
 #include <string>
+
 #include <vector>
 
 #define FIRST_ID 100
@@ -27,16 +29,21 @@ private:
     CCuentasFileManager *cuentasFM;
     CMonedasFileManager *monedasFM;
     vector<CCuenta *> cuentas;
-
+    bool cuentasOrdenadas;
     CMonedas *monedas;
 
     CComentarios *comentarios;
     ArbolBinarioBusqueda<CCuenta *> *arbolBinarioBusqueda;
 
+    int generarId()
+    {
+        return FIRST_ID + rand() % (INT_MAX - 1000) + FIRST_ID;
+    }
+
 public:
     CController()
     {
-
+        cuentasOrdenadas = false;
         monedasFM = new CMonedasFileManager(MONEDAS_FILE);
         cuentasFM = new CCuentasFileManager(CUENTAS_FILE);
         cuentas = cuentasFM->cargarCuentas();
@@ -83,16 +90,17 @@ public:
 
     void registrarCuenta(CCuenta *cuenta)
     {
-        cuenta->setId(cuentas.size() + FIRST_ID);
+        cuenta->setId(generarId());
         cuentas.push_back(cuenta);
         fm->escribir(cuenta->getUser() + ".cs",
                      "Se ha creado la cuenta a nombre de " + cuenta->getName());
         actualizarDatos();
+        cuentasOrdenadas = false;
     }
 
     void eliminarCuenta(CCuenta *cuenta)
     {
-        cuentas.erase(cuentas.begin() + (cuenta->getId() - FIRST_ID));
+        cuentas.erase(cuentas.begin() + (getIndexCuenta(cuenta->getId())));
         actualizarDatos();
         // fm->eliminarArchivo(cuenta->getUser() + ".cs");
         string operacion =
@@ -315,7 +323,7 @@ public:
         }
     }
 
-    void ordenarCuentas()
+    void ordenarCuentasNombre()
     {
         // selectionSort();
         vector<CCuenta *> cuentasOrdenadas;
@@ -332,6 +340,50 @@ public:
         }
     }
 
+    // partition
+    int partition(vector<CCuenta *> &cuentas, int low, int high)
+    {
+        CCuenta *pivot = cuentas[high];
+        int i = (low - 1);
+
+        for (int j = low; j <= high - 1; j++)
+        {
+            if (cuentas[j]->getId() <= pivot->getId())
+            {
+                i++;
+                CCuenta *aux = cuentas[i];
+                cuentas[i] = cuentas[j];
+                cuentas[j] = aux;
+            }
+        }
+        CCuenta *aux = cuentas[i + 1];
+        cuentas[i + 1] = cuentas[high];
+        cuentas[high] = aux;
+
+        return (i + 1);
+    }
+    // quick sort
+    void quickSort(vector<CCuenta *> &cuentas, int low, int high)
+    {
+        if (low < high)
+        {
+            int pi = partition(cuentas, low, high);
+
+            quickSort(cuentas, low, pi - 1);
+            quickSort(cuentas, pi + 1, high);
+        }
+    }
+
+    void ordenarCuentasId()
+    {
+        quickSort(cuentas, 0, cuentas.size() - 1);
+        for (auto i : cuentas)
+        {
+            cout << i->getId() << "  " << i->getName() << '\n';
+        }
+        cuentasOrdenadas = true;
+    }
+
     // buscar cuenta por ID
     CCuenta *buscarPorId(int id)
     {
@@ -346,9 +398,37 @@ public:
         return nullptr;
     }
 
+    int getIndexCuenta(int id)
+    {
+        int l = 0, r = cuentas.size() - 1;
+        while (l <= r)
+        {
+            int m = (l + r) / 2;
+
+            if (cuentas[m]->getId() == id)
+            {
+                return m;
+            }
+            else if (cuentas[m]->getId() < id)
+            {
+                l = m + 1;
+            }
+            else
+            {
+                r = m - 1;
+            }
+        }
+        return -1;
+    }
+
     // binary search by ID
     CCuenta *binarySearchId(int id)
     {
+        if (!cuentasOrdenadas)
+        {
+            cout << "No se ha ordenado la lista de cuentas por ID" << endl;
+            return nullptr;
+        }
         int l = 0, r = cuentas.size() - 1;
         while (l <= r)
         {
@@ -391,5 +471,30 @@ public:
     void mostrarArbolBinarioBusqueda()
     {
         arbolBinarioBusqueda->imprimir();
+    }
+
+    CCuenta *buscarArbolBinarioBusqueda(int id)
+    {
+        crearArbolBinarioBusqueda();
+        return arbolBinarioBusqueda->buscar(id)->data;
+    }
+
+    // generar cuentas
+    void generarCuentas(int n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            if (cuentas.size() > 30000)
+                break;
+            CCuenta *cuenta = new CCuenta("Nombre Cuenta" + to_string(cuentas.size() + FIRST_ID), "Cuenta" + to_string(cuentas.size()), "1234");
+            cuenta->setId(generarId());
+            cuenta->addSaldo(rand() % 100000, "PEN");
+            cuenta->addSaldo(rand() % 100000, "USD");
+            cuenta->addSaldo(rand() % 100000, "EUR");
+
+            cuentas.push_back(cuenta);
+        }
+        actualizarDatos();
+        cuentasOrdenadas = false;
     }
 };

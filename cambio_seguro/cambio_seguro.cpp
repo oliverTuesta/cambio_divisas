@@ -4,6 +4,7 @@
 
 int main()
 {
+    srand(time(NULL));
     CMenu menu;
     menu.init();
     return 0;
