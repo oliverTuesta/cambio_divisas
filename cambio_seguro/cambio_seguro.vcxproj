@@ -126,12 +126,15 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArbolBinarioAVL.h" />
     <ClInclude Include="ArbolBinarioBusqueda.h" />
+    <ClInclude Include="ArbolNode.h" />
     <ClInclude Include="Comentario.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Cuenta.h" />
     <ClInclude Include="cuentasfilemanager.h" />
     <ClInclude Include="filemanager.h" />
+    <ClInclude Include="HashTable.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Monedas.h" />
     <ClInclude Include="monedasfilemanager.h" />

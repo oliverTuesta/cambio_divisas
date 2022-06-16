@@ -31,7 +31,7 @@ public:
         string name, user, password;
         name = "";
         cout << "\n\t\tREGISTRAR USUARIO"
-             << "\n\n";
+            << "\n\n";
         cout << "Ingrese su nombre: ";
         while (name.size() < 1)
         {
@@ -60,29 +60,29 @@ public:
                 cout << "Su contrasena debe tener mas de 4 digitos" << '\n';
         }
 
-        CCuenta *nuevaCuenta = new CCuenta(name, user, password);
+        CCuenta* nuevaCuenta = new CCuenta(name, user, password);
         controller.registrarCuenta(nuevaCuenta);
         Clear();
     }
 
-    CCuenta *iniciarSesion()
+    CCuenta* iniciarSesion()
     {
 
         string user, password;
         cout << "\n\t\tINICIAR SESION"
-             << "\n\n";
+            << "\n\n";
         cout << "Ingrese su usuario: ";
         cin >> user;
         cout << "Ingrese su contrasena: ";
         cin >> password;
-        CCuenta *cuenta = controller.iniciarSesion(user, password);
+        CCuenta* cuenta = controller.iniciarSesion(user, password);
         Clear();
         if (cuenta != nullptr)
             return cuenta;
         return nullptr;
     }
 
-    void escribirComentario(CCuenta *cuenta)
+    void escribirComentario(CCuenta* cuenta)
     {
         cout << "\t\tESCRIBE UN COMENTARIO" << '\n';
         string texto;
@@ -93,10 +93,10 @@ public:
         // cin >> texto;
         controller.agregarComentario(cuenta->getName(), texto);
         cout << "\nGracias por dejar un comentario\n"
-             << '\n';
+            << '\n';
     }
 
-    void menuInisioSesion(CCuenta *cuenta)
+    void menuInisioSesion(CCuenta* cuenta)
     {
 
         int opcion = 1;
@@ -118,14 +118,15 @@ public:
             cout << "13) Busqueda binaria por ID" << '\n';
             cout << "14) Buscar en arbol binario de busqueda" << '\n';
             cout << "15) Mostrar cuentas ordenadas por nombre" << '\n';
-
             cout << "16) Generar cuentas aleatorias" << '\n';
+            cout << "17) Mostrar HashTable" << '\n';
+
             cout << "0) Salir" << '\n';
             cout << "\nElija una opcion: ";
             cin >> opcion;
             string moneda;
             float monto;
-            CCuenta *c;
+            CCuenta* c;
             int id;
             int n;
             switch (opcion)
@@ -133,7 +134,7 @@ public:
             case 1:
                 Clear();
                 cout << "\t\tDEPOSITAR DINERO"
-                     << "\n\n";
+                    << "\n\n";
                 moneda = controller.seleccionarTipoMoneda();
                 if (moneda.empty())
                     break;
@@ -175,16 +176,16 @@ public:
                 break;
             case 11:
                 Clear();
-                controller.crearArbolBinarioBusqueda();
+                controller.crearArboles();
                 Clear();
                 cout << "\t\tMOSTRAR ARBOL BINARIO"
-                     << "\n\n";
+                    << "\n\n";
                 controller.mostrarArbolBinarioBusqueda();
                 break;
             case 12:
                 Clear();
                 cout << "\t\tBUSQUEDA NORMAL"
-                     << "\n\n";
+                    << "\n\n";
                 cout << "Ingrese un ID: ";
                 cin >> id;
                 cout << "Iteraciones: \n\n";
@@ -202,11 +203,11 @@ public:
             case 13:
                 Clear();
                 cout << "\t\tBUSQUEDA BINARIA"
-                     << "\n\n";
+                    << "\n\n";
                 cout << "Ingrese un ID: ";
                 cin >> id;
                 cout << endl
-                     << "Iteraciones: \n\n";
+                    << "Iteraciones: \n\n";
                 c = controller.binarySearchId(id);
                 cout << '\n';
                 if (c)
@@ -221,10 +222,10 @@ public:
             case 14:
                 Clear();
                 cout << "\t\tBUSQUEDA EN ARBOL BINARIO"
-                     << "\n\n";
+                    << "\n\n";
                 cin >> id;
                 cout << endl
-                     << "Iteraciones: \n\n";
+                    << "Iteraciones: \n\n";
                 c = controller.buscarArbolBinarioBusqueda(id);
                 cout << '\n';
                 if (c)
@@ -241,11 +242,15 @@ public:
             case 16:
                 Clear();
                 cout << "\t\tGENERAR CUENTAS ALEATORIAS"
-                     << "\n\n";
+                    << "\n\n";
                 cout << "Ingrese el numero de cuentas a generar: ";
                 cin >> n;
                 controller.generarCuentas(n);
                 cout << "Cuentas generadas" << '\n';
+                break;
+            case 17:
+                Clear();
+                controller.mostrarHashTable();
                 break;
             case 8:
                 Clear();
@@ -271,13 +276,13 @@ public:
         do
         {
             cout << "\n\t\tBIENVENIDO A CAMBIO SEGURO"
-                 << "\n\n";
+                << "\n\n";
             cout << "1) Inisiar sesion" << '\n';
             cout << "2) Registrarse" << '\n';
             cout << "0) Salir" << '\n';
             cout << "\nElija una opcion: ";
             cin >> opcion;
-            CCuenta *cuenta;
+            CCuenta* cuenta;
             switch (opcion)
             {
             case 1:
