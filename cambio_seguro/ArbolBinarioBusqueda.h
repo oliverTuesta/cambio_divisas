@@ -8,8 +8,8 @@ template <class T>
 class ArbolBinarioBusqueda
 {
 private:
-    Node<T>* root;
-    void insertar(Node<T>*& node, int key, T data)
+    Node<T> *root;
+    void insertar(Node<T> *&node, int key, T data)
     {
         if (node == NULL)
         {
@@ -24,7 +24,7 @@ private:
             insertar(node->right, key, data);
         }
     }
-    void postOrder(Node<T>* node)
+    void postOrder(Node<T> *node)
     {
         if (node != NULL)
         {
@@ -33,7 +33,7 @@ private:
             cout << node->data->toString() << endl;
         }
     }
-    void preOrder(Node<T>* node)
+    void preOrder(Node<T> *node)
     {
         if (node != NULL)
         {
@@ -42,7 +42,7 @@ private:
             preOrder(node->right);
         }
     }
-    void inOrder(Node<T>* node)
+    void inOrder(Node<T> *node)
     {
         if (node != NULL)
         {
@@ -53,20 +53,25 @@ private:
     }
 
     // buscar un nodo en el arbol dada una llave
-    Node<T>* buscar(Node<T>* node, int key)
+    T buscar(Node<T> *node, int key)
     {
-        if (node == NULL || node->key == key)
+        if (node)
+            cout << "id: " << node->key << endl;
+        if (node == NULL)
         {
-            return node;
+            return NULL;
         }
-        cout << node->data->getIdeNombre() << endl;
-        if (key < node->key)
+        else if (key < node->key)
         {
             return buscar(node->left, key);
         }
-        else
+        else if (key > node->key)
         {
             return buscar(node->right, key);
+        }
+        else
+        {
+            return node->data;
         }
     }
 
@@ -94,15 +99,10 @@ public:
             cout << "\nPreOrder: \n";
             preOrder(root);
             cout << endl;
-            cout << "InOrder: \n";
-            inOrder(root);
-            cout << endl;
-            cout << "\nPostOrder: \n";
-            postOrder(root);
-            cout << endl;
         }
     }
-    Node<T>* buscar(int key)
+
+    T buscar(int key)
     {
         return buscar(root, key);
     }

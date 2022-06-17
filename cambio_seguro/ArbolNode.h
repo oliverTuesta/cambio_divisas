@@ -6,8 +6,8 @@ class Node
 public:
     int key;
     T data;
-    Node<T>* left;
-    Node<T>* right;
+    Node<T> *left;
+    Node<T> *right;
     int altura;
     Node(int key, T data)
     {

@@ -27,17 +27,17 @@ class CController
 private:
     string CUENTAS_FILE = "cuentas.cs";
     string MONEDAS_FILE = "monedas.cs";
-    CFileManager* fm;
-    CCuentasFileManager* cuentasFM;
-    CMonedasFileManager* monedasFM;
-    vector<CCuenta*> cuentas;
+    CFileManager *fm;
+    CCuentasFileManager *cuentasFM;
+    CMonedasFileManager *monedasFM;
+    vector<CCuenta *> cuentas;
     bool cuentasOrdenadas;
-    CMonedas* monedas;
+    CMonedas *monedas;
 
-    CComentarios* comentarios;
-    ArbolBinarioBusqueda<CCuenta*>* arbolBinarioBusqueda;
-    ArbolBinarioAVL<CCuenta*>* arbolBinarioAVL;
-    HashTable<CCuenta*>* hashTable;
+    CComentarios *comentarios;
+    ArbolBinarioBusqueda<CCuenta *> *arbolBinarioBusqueda;
+    ArbolBinarioAVL<CCuenta *> *arbolBinarioAVL;
+    HashTable<CCuenta *> *hashTable;
 
     int generarId()
     {
@@ -48,16 +48,16 @@ public:
     CController()
     {
         // creando hash table
-        hashTable = new HashTable<CCuenta*>(100);
+        hashTable = new HashTable<CCuenta *>(100);
 
         cuentasOrdenadas = false;
         monedasFM = new CMonedasFileManager(MONEDAS_FILE);
         cuentasFM = new CCuentasFileManager(CUENTAS_FILE);
         cuentas = cuentasFM->cargarCuentas();
         monedas = new CMonedas();
-        Moneda* sol = monedas->buscarPorNombre("PEN");
-        Moneda* dolar = monedas->buscarPorNombre("USD");
-        Moneda* euro = monedas->buscarPorNombre("EUR");
+        Moneda *sol = monedas->buscarPorNombre("PEN");
+        Moneda *dolar = monedas->buscarPorNombre("USD");
+        Moneda *euro = monedas->buscarPorNombre("EUR");
         monedas->agregarMoneda("PEN", 1.0);
         monedas->agregarMoneda("USD", 3.83);
         monedas->agregarMoneda("EUR", 4.03);
@@ -66,11 +66,11 @@ public:
         comentarios = new CComentarios();
     }
     ~CController() {}
-    CCuenta* buscarCuentaPorUsuario(string user)
+    CCuenta *buscarCuentaPorUsuario(string user)
     {
-        CCuenta* buscada = nullptr;
-        for_each(cuentas.begin(), cuentas.end(), [=, &buscada](CCuenta* cuenta)
-            {
+        CCuenta *buscada = nullptr;
+        for_each(cuentas.begin(), cuentas.end(), [=, &buscada](CCuenta *cuenta)
+                 {
                 if (user == cuenta->getUser())
                 {
                     buscada = cuenta;
@@ -99,17 +99,17 @@ public:
         return moneda->nombre;
     }
 
-    void registrarCuenta(CCuenta* cuenta)
+    void registrarCuenta(CCuenta *cuenta)
     {
         cuenta->setId(generarId());
         cuentas.push_back(cuenta);
         fm->escribir(cuenta->getUser() + ".cs",
-            "Se ha creado la cuenta a nombre de " + cuenta->getName());
+                     "Se ha creado la cuenta a nombre de " + cuenta->getName());
         actualizarDatos();
         cuentasOrdenadas = false;
     }
 
-    void eliminarCuenta(CCuenta* cuenta)
+    void eliminarCuenta(CCuenta *cuenta)
     {
         cuentas.erase(cuentas.begin() + (getIndexCuenta(cuenta->getId())));
         actualizarDatos();
@@ -118,23 +118,23 @@ public:
         fm->escribir(cuenta->getUser() + ".cs", operacion);
         cout << "Su cuenta ha sido eliminada correctamente" << '\n';
     }
-    void agregarSaldo(CCuenta* cuenta, string tipoMoneda, float saldo)
+    void agregarSaldo(CCuenta *cuenta, string tipoMoneda, float saldo)
     {
-        saldo = (int)((saldo) * 100) / 100.0;
+        saldo = (int)((saldo)*100) / 100.0;
         if (cuenta->addSaldo(saldo, tipoMoneda))
         {
             actualizarDatos();
             cout << "Se depositado satisfactoriamente " << saldo << " en la cuenta "
-                << tipoMoneda << '\n';
+                 << tipoMoneda << '\n';
             string operacion =
                 "Se ha agregado " + to_string(saldo) + " a la cuenta " + tipoMoneda;
             fm->escribir(cuenta->getUser() + ".cs", operacion);
         }
     }
 
-    CCuenta* iniciarSesion(string user, string password)
+    CCuenta *iniciarSesion(string user, string password)
     {
-        CCuenta* cuentaObjetivo = buscarCuentaPorUsuario(user);
+        CCuenta *cuentaObjetivo = buscarCuentaPorUsuario(user);
         if (cuentaObjetivo != nullptr &&
             cuentaObjetivo->getPassword() == password)
         {
@@ -143,16 +143,16 @@ public:
         return nullptr;
     }
 
-    void retirarDinero(CCuenta* cuenta)
+    void retirarDinero(CCuenta *cuenta)
     {
         cout << "\t\tRETIROS"
-            << "\n\n";
+             << "\n\n";
         float montoRetirar;
         cuenta->imprimirSaldos();
         int idMoneda;
         cout << "Seleccione el tipo de moneda: ";
         cin >> idMoneda;
-        Saldo* saldo = cuenta->buscarPorId(cuenta->getListaSaldos(), idMoneda);
+        Saldo *saldo = cuenta->buscarPorId(cuenta->getListaSaldos(), idMoneda);
         if (saldo != nullptr)
         {
             cout << "Digite el monto a retirar: ";
@@ -160,8 +160,8 @@ public:
             cuenta->retirarSaldo(montoRetirar, saldo->tipoMoneda);
             actualizarDatos();
             string operacion = "Se ha retirado " + to_string(montoRetirar) +
-                " de la cuenta " +
-                monedas->buscarPorId(idMoneda)->nombre;
+                               " de la cuenta " +
+                               monedas->buscarPorId(idMoneda)->nombre;
             fm->escribir(cuenta->getUser() + ".cs", operacion);
         }
         else
@@ -170,22 +170,22 @@ public:
         }
     }
 
-    void cambioDivisas(CCuenta* cuenta)
+    void cambioDivisas(CCuenta *cuenta)
     {
         cout << "\t\tCAMBIO DE DIVISAS"
-            << "\n\n";
+             << "\n\n";
         int opcion;
         cuenta->imprimirSaldos();
         cout << "Seleccione la moneda que desea cambiar: ";
         cin >> opcion;
-        Saldo* saldo = cuenta->buscarPorId(cuenta->getListaSaldos(), opcion);
+        Saldo *saldo = cuenta->buscarPorId(cuenta->getListaSaldos(), opcion);
         string monedaInicial = saldo->tipoMoneda;
         if (saldo != nullptr && saldo->dinero > 0)
         {
             monedas->imprimirMonedas();
             cout << "Seleccione la nueva moneda: ";
             cin >> opcion;
-            Moneda* monedaNueva = monedas->buscarPorId(opcion);
+            Moneda *monedaNueva = monedas->buscarPorId(opcion);
             if (monedaNueva != nullptr)
             {
                 float valorInicial;
@@ -197,7 +197,7 @@ public:
                     // convirtiendo a soles
                     float valorInicialSoles =
                         valorInicial * monedas->getValorPorNombreRecursivo(
-                            monedas->getListaMonedas(), monedaInicial);
+                                           monedas->getListaMonedas(), monedaInicial);
                     // convetir a la nueva moneda
                     // los * 100 y / 100 son para redondear a dos cifras de cimales
                     float valorConvertido =
@@ -207,16 +207,16 @@ public:
                     cout << "Su cambio se ha realizado correctamente" << '\n';
 
                     string operacion = "Se ha cambiado " + to_string(valorInicial) + " " +
-                        monedaInicial + " a " +
-                        to_string(valorConvertido) + " " +
-                        monedaNueva->nombre;
+                                       monedaInicial + " a " +
+                                       to_string(valorConvertido) + " " +
+                                       monedaNueva->nombre;
                     fm->escribir(cuenta->getUser() + ".cs", operacion);
                 }
                 else
                 {
                     cout << "No se pudo realizar el cambio,\nel monto minimo a convertir "
-                        "es 5"
-                        << '\n';
+                            "es 5"
+                         << '\n';
                 }
             }
             else
@@ -229,11 +229,11 @@ public:
             cout << "No tiene dinero en esa cuenta" << '\n';
         }
     }
-    void mostrarHistorial(CCuenta* cuenta)
+    void mostrarHistorial(CCuenta *cuenta)
     {
         string fileName = cuenta->getUser() + ".cs";
         cout << "\n\tFECHA\t\tOPERACION"
-            << "\n\n";
+             << "\n\n";
         string history = fm->leerArchivo(fileName);
         cout << history << '\n';
         cout << '\n';
@@ -248,14 +248,14 @@ public:
         comentarios->imprimirPila(fm);
     }
 
-    void merge(vector<CCuenta*>& cuentas, int l, int m, int r)
+    void merge(vector<CCuenta *> &cuentas, int l, int m, int r)
     {
 
         int n1 = m - l + 1;
         int n2 = r - m;
 
-        vector<CCuenta*> cuentasLeft;
-        vector<CCuenta*> cuentasRight;
+        vector<CCuenta *> cuentasLeft;
+        vector<CCuenta *> cuentasRight;
 
         for (int i = 0; i < n1; i++)
         {
@@ -303,7 +303,7 @@ public:
         }
     }
 
-    void mergeSort(vector<CCuenta*>& cuentas, int l, int r)
+    void mergeSort(vector<CCuenta *> &cuentas, int l, int r)
     {
 
         if (l >= r)
@@ -330,7 +330,7 @@ public:
                 }
             }
             // swap
-            CCuenta* aux = cuentas[menor];
+            CCuenta *aux = cuentas[menor];
             cuentas[menor] = cuentas[i];
             cuentas[i] = aux;
         }
@@ -339,9 +339,9 @@ public:
     void ordenarCuentasNombre()
     {
         // selectionSort();
-        vector<CCuenta*> cuentasOrdenadas;
+        vector<CCuenta *> cuentasOrdenadas;
         // copiar datos de cuentas a cuentasOrdenadas
-        for (CCuenta* c : cuentas)
+        for (CCuenta *c : cuentas)
         {
             cuentasOrdenadas.push_back(c);
         }
@@ -354,9 +354,9 @@ public:
     }
 
     // partition
-    int partition(vector<CCuenta*>& cuentas, int low, int high)
+    int partition(vector<CCuenta *> &cuentas, int low, int high)
     {
-        CCuenta* pivot = cuentas[high];
+        CCuenta *pivot = cuentas[high];
         int i = (low - 1);
 
         for (int j = low; j <= high - 1; j++)
@@ -364,19 +364,19 @@ public:
             if (cuentas[j]->getId() <= pivot->getId())
             {
                 i++;
-                CCuenta* aux = cuentas[i];
+                CCuenta *aux = cuentas[i];
                 cuentas[i] = cuentas[j];
                 cuentas[j] = aux;
             }
         }
-        CCuenta* aux = cuentas[i + 1];
+        CCuenta *aux = cuentas[i + 1];
         cuentas[i + 1] = cuentas[high];
         cuentas[high] = aux;
 
         return (i + 1);
     }
     // quick sort
-    void quickSort(vector<CCuenta*>& cuentas, int low, int high)
+    void quickSort(vector<CCuenta *> &cuentas, int low, int high)
     {
         if (low < high)
         {
@@ -398,7 +398,7 @@ public:
     }
 
     // buscar cuenta por ID
-    CCuenta* buscarPorId(int id)
+    CCuenta *buscarPorId(int id)
     {
         for (auto i : cuentas)
         {
@@ -435,7 +435,7 @@ public:
     }
 
     // binary search by ID
-    CCuenta* binarySearchId(int id)
+    CCuenta *binarySearchId(int id)
     {
         if (!cuentasOrdenadas)
         {
@@ -475,7 +475,7 @@ public:
 
     void crearHashTable()
     {
-        hashTable = new HashTable<CCuenta*>(100);
+        hashTable = new HashTable<CCuenta *>(100);
         for (auto i : cuentas)
         {
             hashTable->insert(i->getId(), i);
@@ -490,25 +490,37 @@ public:
 
     void crearArboles()
     {
-        arbolBinarioAVL = new ArbolBinarioAVL<CCuenta*>();
-        arbolBinarioBusqueda = new ArbolBinarioBusqueda<CCuenta*>();
-        for (CCuenta* i : cuentas)
+        arbolBinarioAVL = new ArbolBinarioAVL<CCuenta *>();
+        arbolBinarioBusqueda = new ArbolBinarioBusqueda<CCuenta *>();
+        for (CCuenta *i : cuentas)
         {
             arbolBinarioBusqueda->insertar(i->getId(), i);
-            arbolBinarioAVL->insertar(5, i);
+            arbolBinarioAVL->insertar(i->getId(), i);
         }
     }
 
     void mostrarArbolBinarioBusqueda()
     {
         arbolBinarioBusqueda->imprimir();
-        arbolBinarioAVL->preOrder();
+        arbolBinarioAVL->imprimir();
     }
 
-    CCuenta* buscarArbolBinarioBusqueda(int id)
+    void buscarArbolBinarioBusqueda(int id)
     {
         crearArboles();
-        return arbolBinarioBusqueda->buscar(id)->data;
+        cout << "Arbol Binario Busqueda:\n";
+        cout << endl
+             << "Iteraciones: \n\n";
+        CCuenta *c = arbolBinarioBusqueda->buscar(id);
+        cout << "Arbol Binario Busqueda AVL:\n";
+        cout << endl
+             << "Iteraciones: \n\n";
+        c = arbolBinarioAVL->buscar(id);
+        cout << endl;
+        if (c)
+            c->imprimirCuenta();
+        else
+            cout << "No se encontro la cuenta" << '\n';
     }
 
     // generar cuentas
@@ -518,9 +530,9 @@ public:
         {
             if (cuentas.size() > 30000)
                 break;
-            CCuenta* cuenta =
+            CCuenta *cuenta =
                 new CCuenta("Nombre Cuenta" + to_string(cuentas.size() + FIRST_ID),
-                    "Cuenta" + to_string(cuentas.size()), "1234");
+                            "Cuenta" + to_string(cuentas.size()), "1234");
             cuenta->setId(generarId());
             cuenta->addSaldo(rand() % 100000, "PEN");
             cuenta->addSaldo(rand() % 100000, "USD");
