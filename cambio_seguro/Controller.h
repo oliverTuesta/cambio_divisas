@@ -49,7 +49,6 @@ public:
     {
         // creando hash table
         hashTable = new HashTable<CCuenta *>(100);
-
         cuentasOrdenadas = false;
         monedasFM = new CMonedasFileManager(MONEDAS_FILE);
         cuentasFM = new CCuentasFileManager(CUENTAS_FILE);

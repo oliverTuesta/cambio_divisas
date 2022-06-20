@@ -294,4 +294,9 @@ public:
             }
         } while (opcion != 0);
     }
+
+    // insertar en trie tree
+    void insertarTrieTree(string nombre, int id)
+    {
+    }
 };
