@@ -9,6 +9,7 @@
 #include "monedasfilemanager.h"
 #include "ArbolBinarioAVL.h"
 #include "HashTable.h"
+#include "ArbolTrie.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -17,7 +18,6 @@
 #include <ctime>
 #include <string>
 #include <time.h>
-
 #include <vector>
 
 #define FIRST_ID 100
@@ -33,15 +33,28 @@ private:
     vector<CCuenta *> cuentas;
     bool cuentasOrdenadas;
     CMonedas *monedas;
-
     CComentarios *comentarios;
     ArbolBinarioBusqueda<CCuenta *> *arbolBinarioBusqueda;
     ArbolBinarioAVL<CCuenta *> *arbolBinarioAVL;
     HashTable<CCuenta *> *hashTable;
+    ArbolTrie *arbolTrie;
 
     int generarId()
     {
         return FIRST_ID + rand() % (INT_MAX - 1000) + FIRST_ID;
+    }
+
+    void cargarCuentas() {
+        // borrar contenido de cuentas
+        cuentas.clear();
+        arbolTrie = new ArbolTrie();
+        
+        cuentas = cuentasFM->cargarCuentas();
+
+        for (CCuenta* c : cuentas) {
+            arbolTrie->insert(c->getUser(), c);
+        }
+        cuentasOrdenadas = false;
     }
 
 public:
@@ -52,7 +65,7 @@ public:
         cuentasOrdenadas = false;
         monedasFM = new CMonedasFileManager(MONEDAS_FILE);
         cuentasFM = new CCuentasFileManager(CUENTAS_FILE);
-        cuentas = cuentasFM->cargarCuentas();
+        cargarCuentas();
         monedas = new CMonedas();
         Moneda *sol = monedas->buscarPorNombre("PEN");
         Moneda *dolar = monedas->buscarPorNombre("USD");
@@ -68,18 +81,24 @@ public:
     CCuenta *buscarCuentaPorUsuario(string user)
     {
         CCuenta *buscada = nullptr;
-        for_each(cuentas.begin(), cuentas.end(), [=, &buscada](CCuenta *cuenta)
-                 {
-                if (user == cuenta->getUser())
-                {
-                    buscada = cuenta;
-                } });
+        buscada = arbolTrie->searchCuenta(user);
+        //for_each(cuentas.begin(), cuentas.end(), [=, &buscada](CCuenta *cuenta)
+        //{
+            //if (user == cuenta->getUser())
+            //{
+                //buscada = cuenta;
+            //}
+        //});
         return buscada;
     }
 
     void actualizarDatos()
     {
         cuentasFM->actualizarUsuarios(cuentas);
+    }
+
+    void cargarDatos() {
+        cargarCuentas();
     }
 
     string seleccionarTipoMoneda()
@@ -91,7 +110,8 @@ public:
         {
             cout << "Seleccione una opcion: ";
             cin >> opcion;
-        } while (opcion < 0 || opcion > monedas->getCantidadMonedas());
+        }
+        while (opcion < 0 || opcion > monedas->getCantidadMonedas());
         if (opcion == 0)
             return "";
         auto moneda = monedas->buscarPorId(opcion);
@@ -135,7 +155,7 @@ public:
     {
         CCuenta *cuentaObjetivo = buscarCuentaPorUsuario(user);
         if (cuentaObjetivo != nullptr &&
-            cuentaObjetivo->getPassword() == password)
+                cuentaObjetivo->getPassword() == password)
         {
             return cuentaObjetivo;
         }
@@ -196,7 +216,7 @@ public:
                     // convirtiendo a soles
                     float valorInicialSoles =
                         valorInicial * monedas->getValorPorNombreRecursivo(
-                                           monedas->getListaMonedas(), monedaInicial);
+                            monedas->getListaMonedas(), monedaInicial);
                     // convetir a la nueva moneda
                     // los * 100 y / 100 son para redondear a dos cifras de cimales
                     float valorConvertido =
@@ -214,7 +234,7 @@ public:
                 else
                 {
                     cout << "No se pudo realizar el cambio,\nel monto minimo a convertir "
-                            "es 5"
+                         "es 5"
                          << '\n';
                 }
             }
@@ -335,6 +355,55 @@ public:
         }
     }
 
+    // ordenar cuentas por nombre con radix sort
+    // radix sort
+    int getMax(vector<CCuenta*> &v)
+    {
+        int max = v[0]->getName()[0];
+        for (int i = 1; i < v.size(); i++)
+        {
+            if (v[i]->getName()[0] > max)
+            {
+                max = v[i]->getName()[0];
+            }
+        }
+        return max;
+    }
+
+// count sort
+    void countSort(vector<CCuenta*> &cuentas, int exp)
+    {
+        CCuenta* output[cuentas.size()];
+        int i, count[10] = {0};
+        for (i = 0; i < cuentas.size(); i++)
+        {
+            count[(cuentas[i]->getName()[0] / exp) % 10]++;
+        }
+        for (i = 1; i < 10; i++)
+        {
+            count[i] += count[i - 1];
+        }
+        for (i = cuentas.size() - 1; i >= 0; i--)
+        {
+            output[count[(cuentas[i]->getName()[0] / exp) % 10] - 1] = cuentas[i];
+            count[(cuentas[i]->getName()[0] / exp) % 10]--;
+        }
+        for (i = 0; i < cuentas.size(); i++)
+        {
+            cuentas[i] = output[i];
+        }
+    }
+
+// radix sort
+    void radixSort(vector<CCuenta*> &cuentas)
+    {
+        int m = getMax(cuentas);
+        for (int exp = 1; m / exp > 0; exp *= 10)
+        {
+            countSort(cuentas, exp);
+        }
+    }
+
     void ordenarCuentasNombre()
     {
         // selectionSort();
@@ -345,7 +414,8 @@ public:
             cuentasOrdenadas.push_back(c);
         }
 
-        mergeSort(cuentasOrdenadas, 0, cuentas.size() - 1);
+        //mergeSort(cuentasOrdenadas, 0, cuentas.size() - 1);
+        radixSort(cuentasOrdenadas);
         for (auto i : cuentasOrdenadas)
         {
             cout << i->getId() << "  " << i->getName() << '\n';
@@ -542,4 +612,5 @@ public:
         actualizarDatos();
         cuentasOrdenadas = false;
     }
+
 };

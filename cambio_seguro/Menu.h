@@ -268,6 +268,7 @@ public:
         int opcion = 1;
         do
         {
+            controller.cargarDatos();
             cout << "\n\t\tBIENVENIDO A CAMBIO SEGURO"
                  << "\n\n";
             cout << "1) Inisiar sesion" << '\n';
