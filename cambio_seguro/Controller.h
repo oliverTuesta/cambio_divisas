@@ -44,14 +44,16 @@ private:
         return FIRST_ID + rand() % (INT_MAX - 1000) + FIRST_ID;
     }
 
-    void cargarCuentas() {
+    void cargarCuentas()
+    {
         // borrar contenido de cuentas
         cuentas.clear();
         arbolTrie = new ArbolTrie();
-        
+
         cuentas = cuentasFM->cargarCuentas();
 
-        for (CCuenta* c : cuentas) {
+        for (CCuenta* c : cuentas)
+        {
             arbolTrie->insert(c->getUser(), c);
         }
         cuentasOrdenadas = false;
@@ -84,10 +86,10 @@ public:
         buscada = arbolTrie->searchCuenta(user);
         //for_each(cuentas.begin(), cuentas.end(), [=, &buscada](CCuenta *cuenta)
         //{
-            //if (user == cuenta->getUser())
-            //{
-                //buscada = cuenta;
-            //}
+        //if (user == cuenta->getUser())
+        //{
+        //buscada = cuenta;
+        //}
         //});
         return buscada;
     }
@@ -97,7 +99,8 @@ public:
         cuentasFM->actualizarUsuarios(cuentas);
     }
 
-    void cargarDatos() {
+    void cargarDatos()
+    {
         cargarCuentas();
     }
 
