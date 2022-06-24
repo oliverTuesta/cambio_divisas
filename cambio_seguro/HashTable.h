@@ -77,4 +77,20 @@ public:
             }
         }
     }
+
+    //search for a key in the hash table
+    T search(int key)
+    {
+        int hash_value = hashFunction(key);
+        NodeHash<T>* temp = table[hash_value];
+        while (temp != NULL)
+        {
+            if (temp->key == key)
+            {
+                return temp->data;
+            }
+            temp = temp->next;
+        }
+        return NULL;
+    }
 };

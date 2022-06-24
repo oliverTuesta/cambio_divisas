@@ -120,6 +120,7 @@ public:
             cout << "15) Mostrar cuentas ordenadas por nombre" << '\n';
             cout << "16) Generar cuentas aleatorias" << '\n';
             cout << "17) Mostrar HashTable" << '\n';
+            cout << "18) Buscar en HashTable" << '\n';
 
             cout << "0) Salir" << '\n';
             cout << "\nElija una opcion: ";
@@ -244,6 +245,25 @@ public:
             case 17:
                 Clear();
                 controller.mostrarHashTable();
+                break;
+            case 18:
+                Clear();
+                cout << "\t\tBUSCAR EN HASHTABLE"
+                     << "\n\n";
+                cout << "Ingrese un ID: ";
+                cin >> id;
+                cout << endl
+                     << "Iteraciones: \n\n";
+                c = controller.buscarHashTable(id);
+                cout << '\n';
+                if (c)
+                {
+                    c->imprimirCuenta();
+                }
+                else
+                {
+                    cout << "No se encontro la cuenta" << '\n';
+                }
                 break;
             case 8:
                 Clear();

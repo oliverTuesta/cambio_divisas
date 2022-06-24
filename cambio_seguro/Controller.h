@@ -616,4 +616,11 @@ public:
         cuentasOrdenadas = false;
     }
 
+    //buscar en hashTable
+    CCuenta *buscarHashTable(int id)
+    {
+        crearHashTable();
+        return hashTable->search(id);
+    }
+
 };
