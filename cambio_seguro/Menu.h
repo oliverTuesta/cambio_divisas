@@ -43,12 +43,18 @@ public:
         {
             cout << "Ingrese su nombre de usuario: ";
             cin >> user;
-            usuarioExiste = controller.buscarCuentaPorUsuario(user) != nullptr;
-            if (usuarioExiste)
+            //convert to lowercase
+            for (int i = 0; i < user.size(); i++)
             {
-                cout << "Usuario ya registrado, intente otra vez" << '\n';
+                user[i] = tolower(user[i]);
             }
-        } while (usuarioExiste);
+            usuarioExiste = controller.buscarCuentaPorUsuario(user) != nullptr;
+            if (usuarioExiste || user.size() < 4 || user[0] < 'a' || user[0] > 'z')
+            {
+                cout << "El nombre de usuario ingresado no es valido, intente nuevamente"
+                     << endl;
+            }
+        } while (usuarioExiste || user.size() < 4 || user[0] < 'a' || user[0] > 'z');
 
         bool passwordAccepted = false;
         while (!passwordAccepted && !usuarioExiste)
@@ -181,7 +187,7 @@ public:
                 Clear();
                 cout << "\t\tMOSTRAR ARBOL BINARIO"
                      << "\n\n";
-                controller.mostrarArbolBinarioBusqueda();
+                controller.mostrarArbolesBinarios();
                 break;
             case 12:
                 Clear();

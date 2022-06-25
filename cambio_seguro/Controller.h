@@ -571,9 +571,11 @@ public:
         }
     }
 
-    void mostrarArbolBinarioBusqueda()
+    void mostrarArbolesBinarios()
     {
+        cout<< "Arbol Binario Busqueda\n";
         arbolBinarioBusqueda->imprimir();
+        cout<< "Arbol Binario AVL\n";
         arbolBinarioAVL->imprimir();
     }
 
