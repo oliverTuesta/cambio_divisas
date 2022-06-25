@@ -85,6 +85,7 @@ public:
         NodeHash<T>* temp = table[hash_value];
         while (temp != NULL)
         {
+            cout<< temp->data->getIdeNombre() << endl;
             if (temp->key == key)
             {
                 return temp->data;
