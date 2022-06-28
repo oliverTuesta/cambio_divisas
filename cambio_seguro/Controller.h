@@ -602,7 +602,7 @@ public:
     {
         for (int i = 0; i < n; i++)
         {
-            if (cuentas.size() > 30000)
+            if (cuentas.size() > 1000000)
                 break;
             CCuenta *cuenta =
                 new CCuenta("Nombre Cuenta" + to_string(cuentas.size() + FIRST_ID),
